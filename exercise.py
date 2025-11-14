@@ -1,5 +1,21 @@
 """A Profiler provides methods to use a DNA string for profiling suspects."""
 
+def longest_count(seq: str, subseq:str) -> int:
+    longest = 0
+    count = 0
+    i = 0
+    while i <= len(seq) - len(subseq):
+        if seq[i:i+len(subseq)] == subseq:
+            count += 1
+            i = i + len(subseq)
+        else:
+            longest = max(longest, count)
+            count = 0
+            i += 1
+    longest = max(longest, count)
+    return longest
+            
+            
 
 class Profiler:
     """Encapsulate a DNA sequence.
@@ -60,7 +76,8 @@ class Profiler:
         >>> p.longest_run('TATC')
         5
         """
-        return -1
+        return longest_count(self.seq, subseq)
+    
 
     def match_suspect(self,
                       suspect_name: str,
@@ -73,4 +90,11 @@ class Profiler:
         >>> p.match_suspect('Abel', {'AGAT':3, 'AATG':7, 'TATC':4})
         False
         """
-        pass
+        TorF: list[bool] = [] 
+        for ss in dna_fpr.keys():
+            if self.longest_run(ss) == dna_fpr[ss]:
+                TorF.append(True)
+            else:
+                TorF.append(False)
+                
+        return all(TorF)
